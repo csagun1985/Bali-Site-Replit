@@ -41,6 +41,10 @@ test("renders development preview metadata", async () => {
   assert.match(html, /<link(?=[^>]*rel=["']apple-touch-icon["'])(?=[^>]*href=["']\/icons\/apple-touch-icon\.png["'])[^>]*>/i);
   assert.match(html, /<meta(?=[^>]*name=["']apple-mobile-web-app-capable["'])(?=[^>]*content=["']yes["'])[^>]*>/i);
   assert.match(html, /<meta(?=[^>]*name=["']theme-color["'])(?=[^>]*content=["']#fff9f0["'])[^>]*>/i);
+  assert.match(html, /Lagoon Bar Welcome Drinks/);
+  assert.match(html, /Ramada Encore by Wyndham/);
+  assert.match(html, /Philippines Residents Checklist/);
+  assert.match(html, /Complete Philippine eTravel within 72 hours before departure/);
 });
 
 test("applies the latest team assignments when saved trip data loads", async () => {

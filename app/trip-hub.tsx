@@ -4,6 +4,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import PwaInstall from "./pwa-install";
+import { replitContent } from "./replit-content";
 
 type Item = { id: string; text: string; link?: string; linkLabel?: string };
 type Group = { id:string; leader:string; photo:string; members:string[] };
@@ -138,28 +139,22 @@ const recommendationCategoryDetails: Record<string, { image: string; alt: string
 };
 
 const defaults: Content = {
-  title: "Bali, here we come.", kicker: "ACM GROUP STAFF TRIP 2026", subtitle: "Your ACM Group Bali 2026 trip hub",
-  dates: "18–23 September 2026", heroImage: "/hero-bali.png", logoImage: "/acm-group-logo.png",
-  visaUrl: "https://evisa.imigrasi.go.id/", arrivalUrl: "https://allindonesia.imigrasi.go.id/", insuranceUrl: "https://www.comparethemarket.com.au/travel-insurance/",
-  accommodation: "Accommodation details coming soon", accommodationNote: "Add the hotel, address and booking information in Edit mode.", flightNote: "Flight details will be added here once confirmed.",
-  itinerary: [
-    { day: "18 SEP", title: "Arrival in Bali", detail: "Team arrival, hotel check-in and welcome evening." },
-    { day: "19–22 SEP", title: "The Bali experience", detail: "Activities, team events and free time—full itinerary coming soon." },
-    { day: "23 SEP", title: "Homeward bound", detail: "Hotel check-out and return flights." },
-  ],
-  checklist: [
-    { id: "passport", text: "Passport with at least 6 months’ validity" }, { id: "visa", text: "Australian residents travelling on an Australian passport only: Visa completed" },
-    { id: "arrival", text: "Arrival declaration completed" }, { id: "insurance", text: "Travel insurance arranged" },
-    { id: "clothes", text: "Light clothing and smart-casual outfit" }, { id: "swim", text: "Swimwear, hat and sunscreen" },
-    { id: "power", text: "Travel adaptor and phone charger" },
-  ],
-  groups: Array.from({length:7},(_,i) => ({ id:`group-${i+1}`, leader:`Team Leader ${i+1}`, photo:"", members:["Add team member names"] })),
-  preparationTips: [
-    { id:"prep-apps", title:"Useful apps", detail:"Add the transport, messaging and travel apps you want everyone to download before departure.", link:"" },
-    { id:"prep-money", title:"Money and payments", detail:"Add your preferred guidance for exchanging money, accessing cash and using cards in Bali.", link:"" },
-    { id:"prep-health", title:"Health preparation", detail:"Remind staff to speak with their doctor or pharmacist about suitable medicines and personal health needs before travelling.", link:"" },
-    { id:"prep-water", title:"Food and water", detail:"Drink sealed bottled or properly filtered water, including when brushing your teeth, and take sensible food-hygiene precautions.", link:"" },
-  ],
+  title: replitContent.title,
+  kicker: replitContent.kicker,
+  subtitle: replitContent.subtitle,
+  dates: replitContent.dates,
+  heroImage: replitContent.heroImage,
+  logoImage: replitContent.logoImage,
+  visaUrl: replitContent.visaUrl,
+  arrivalUrl: replitContent.arrivalUrl,
+  insuranceUrl: replitContent.insuranceUrl,
+  accommodation: replitContent.accommodation,
+  accommodationNote: replitContent.accommodationNote,
+  flightNote: replitContent.flightNote,
+  itinerary: replitContent.itinerary.map(item => ({ ...item })),
+  checklist: replitContent.checklist.map(item => ({ ...item })),
+  groups: replitContent.groups.map(group => ({ ...group, members: [...group.members] })),
+  preparationTips: replitContent.preparationTips.map(tip => ({ ...tip })),
   recommendations: seminyakRecommendations,
 };
 

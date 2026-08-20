@@ -1,4 +1,6 @@
 import { getSiteEnv } from "../../platform-env";
+import { isReplitRuntime } from "../../chatgpt-auth";
+import { getReplitStore } from "../../replit-store";
 
 const messagesSchema = `CREATE TABLE IF NOT EXISTS trip_team_messages (id TEXT PRIMARY KEY, group_id TEXT NOT NULL, author_name TEXT NOT NULL, body TEXT NOT NULL, delete_token TEXT NOT NULL, created_at TEXT NOT NULL)`;
 const memoriesSchema = `CREATE TABLE IF NOT EXISTS trip_memories (id TEXT PRIMARY KEY, object_key TEXT NOT NULL, caption TEXT NOT NULL DEFAULT '', uploader TEXT NOT NULL, created_at TEXT NOT NULL)`;
@@ -19,7 +21,35 @@ type MemoryRow = {
 };
 
 export async function GET() {
-  const { DB } = getSiteEnv();
+  let DB: D1Database;
+  try {
+    ({ DB } = getSiteEnv());
+  } catch (error) {
+    if (!isReplitRuntime()) throw error;
+    const store = getReplitStore();
+    const activity = [
+      ...store.messages.map(message => ({
+        id: `message:${message.id}`,
+        kind: message.groupId === "trip-updates"
+          ? "update"
+          : message.groupId === "trip-wall"
+            ? "group-message"
+            : "team-message",
+        groupId: message.groupId,
+        author: message.authorName,
+        text: message.body,
+        createdAt: message.createdAt,
+      })),
+      ...store.memories.map(memory => ({
+        id: `memory:${memory.id}`,
+        kind: "photo",
+        author: memory.uploader,
+        text: memory.caption || "Shared a new trip photo.",
+        createdAt: memory.createdAt,
+      })),
+    ].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).slice(0, 40);
+    return Response.json({ activity });
+  }
   await DB.batch([
     DB.prepare(messagesSchema),
     DB.prepare(memoriesSchema),

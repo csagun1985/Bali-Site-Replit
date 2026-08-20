@@ -1,4 +1,4 @@
-const CACHE_VERSION = "bali-hub-2026-v1";
+const CACHE_VERSION = "bali-hub-2026-v2";
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const RUNTIME_CACHE = `${CACHE_VERSION}-runtime`;
 const APP_SHELL = [

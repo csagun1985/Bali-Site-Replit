@@ -16,10 +16,19 @@ For a Replit deployment, use:
 - Build command: `npm run build`
 - Run command: `npm run start:replit`
 
-The local Replit runtime supplies development D1 and R2-compatible storage for
-team messages and uploaded photos. The approved page content is embedded in
-`app/replit-content.ts`, so the page remains complete when the database is
-empty.
+The approved page content is embedded in `app/replit-content.ts` and is also
+used for the first server-rendered page, so the itinerary, accommodation,
+checklists, team groups and preparation content appear immediately without a
+Cloudflare database.
+
+The local Replit runtime supplies development D1 and R2-compatible storage.
+When a production Replit process has no Cloudflare bindings, updates, chats and
+photo uploads use a Replit-safe in-memory store instead of returning errors.
+Those interactive entries reset whenever the Replit deployment restarts; use
+Cloudflare D1 and R2 when permanent shared storage is required.
+
+Optionally add a Replit Secret named `TEAM_LEADER_PIN` to enable Team Leader
+Mode for posting announcements and moderating messages.
 
 ## Cloudflare-compatible foundation
 
