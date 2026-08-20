@@ -152,7 +152,7 @@ export const replitContent = {
   "importantInfo": [
     {
       "id": "important-1",
-      "text": "Ensure your Visa application and Immigration checks are completed minimum 3 days prior to departure. Visas cost about $50AUD."
+      "text": "Australian residents travelling on an Australian passport only: Ensure your Visa application and Immigration checks are completed at least 3 days prior to departure. Visas cost approximately AUD $50. This visa guidance does not apply to Philippines residents."
     },
     {
       "id": "important-2",
