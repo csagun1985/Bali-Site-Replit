@@ -16,6 +16,15 @@ const SIGN_IN_PATH = "/signin-with-chatgpt";
 const SIGN_OUT_PATH = "/signout-with-chatgpt";
 const CALLBACK_PATH = "/callback";
 
+export function isReplitRuntime(): boolean {
+  return Boolean(
+    process.env.REPLIT_RUNTIME === "1" ||
+      process.env.REPL_ID ||
+      process.env.REPL_SLUG ||
+      process.env.REPLIT_DEPLOYMENT,
+  );
+}
+
 export async function getChatGPTUser(): Promise<ChatGPTUser | null> {
   const requestHeaders = await headers();
   const email = requestHeaders.get(USER_EMAIL_HEADER);
@@ -32,6 +41,18 @@ export async function getChatGPTUser(): Promise<ChatGPTUser | null> {
     displayName: fullName ?? email,
     email,
     fullName,
+  };
+}
+
+export async function getAppUser(): Promise<ChatGPTUser | null> {
+  const chatGPTUser = await getChatGPTUser();
+  if (chatGPTUser) return chatGPTUser;
+  if (!isReplitRuntime()) return null;
+
+  return {
+    displayName: "ACM Team Member",
+    email: "acm-team-member@replit.local",
+    fullName: "ACM Team Member",
   };
 }
 

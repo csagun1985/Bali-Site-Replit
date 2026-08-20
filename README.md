@@ -1,9 +1,27 @@
-# ACM Bali 2026
+# ACM Bali 2026 - Replit compatible
 
-The production source for the ACM Group Bali 2026 staff trip website.
+This branch contains the complete ACM Bali 2026 site, including the approved
+itinerary, accommodation, checklists and team-group content as a built-in
+fallback. It runs in Replit without ChatGPT sign-in or a pre-populated
+Cloudflare D1 database.
 
-For GitHub and Cloudflare Workers setup, see
-[`CLOUDFLARE_DEPLOYMENT.md`](./CLOUDFLARE_DEPLOYMENT.md).
+## Run in Replit
+
+1. Import the GitHub repository into Replit.
+2. Use Node.js 22.
+3. Click **Run**. Replit uses `npm run dev:replit` automatically.
+
+For a Replit deployment, use:
+
+- Build command: `npm run build`
+- Run command: `npm run start:replit`
+
+The local Replit runtime supplies development D1 and R2-compatible storage for
+team messages and uploaded photos. The approved page content is embedded in
+`app/replit-content.ts`, so the page remains complete when the database is
+empty.
+
+## Cloudflare-compatible foundation
 
 A clean full-stack starter running on
 [vinext](https://github.com/cloudflare/vinext), with optional Cloudflare D1 and

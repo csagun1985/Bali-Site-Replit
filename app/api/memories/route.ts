@@ -1,4 +1,4 @@
-import { getChatGPTUser } from "../../chatgpt-auth";
+import { getAppUser } from "../../chatgpt-auth";
 import { getSiteEnv } from "../../platform-env";
 
 const schema = `CREATE TABLE IF NOT EXISTS trip_memories (id TEXT PRIMARY KEY, object_key TEXT NOT NULL, caption TEXT NOT NULL DEFAULT '', uploader TEXT NOT NULL, created_at TEXT NOT NULL)`;
@@ -9,14 +9,14 @@ export async function GET() {
   await DB.prepare(schema).run(); await DB.prepare(likesSchema).run();
   const { results } = await DB.prepare("SELECT id, object_key, caption, uploader, created_at FROM trip_memories ORDER BY created_at DESC").all<{ id:string; object_key:string; caption:string; uploader:string; created_at:string }>();
   const { results: likeRows } = await DB.prepare("SELECT memory_id, COUNT(*) AS total FROM trip_memory_likes GROUP BY memory_id").all<{ memory_id:string; total:number }>();
-  const user = await getChatGPTUser();
+  const user = await getAppUser();
   const { results: userLikes } = user ? await DB.prepare("SELECT memory_id FROM trip_memory_likes WHERE user_email = ?").bind(user.email).all<{ memory_id:string }>() : { results: [] as {memory_id:string}[] };
   const counts = new Map(likeRows.map(row => [row.memory_id, Number(row.total)])); const liked = new Set(userLikes.map(row => row.memory_id));
   return Response.json({ memories: results.map(memory => ({ id:memory.id, url:`/api/images/${memory.object_key.split("/").map(encodeURIComponent).join("/")}`, caption:memory.caption, uploader:memory.uploader, createdAt:memory.created_at, likes:counts.get(memory.id) || 0, liked:liked.has(memory.id) })) });
 }
 
 export async function POST(request: Request) {
-  const user = await getChatGPTUser();
+  const user = await getAppUser();
   if (!user) return new Response("Staff access is required to upload photos.", { status: 401 });
   const form = await request.formData(); const file = form.get("file");
   if (!(file instanceof File)) return new Response("Photo required", { status: 400 });
@@ -29,7 +29,7 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
-  const user = await getChatGPTUser();
+  const user = await getAppUser();
   if (!user) return new Response("Staff access is required to remove photos.", { status: 401 });
   const id = new URL(request.url).searchParams.get("id");
   if (!id) return new Response("Photo id required", { status: 400 });
@@ -43,7 +43,7 @@ export async function DELETE(request: Request) {
 }
 
 export async function PUT(request: Request) {
-  const user = await getChatGPTUser();
+  const user = await getAppUser();
   if (!user) return new Response("Staff access is required to like photos.", { status: 401 });
   const { id } = await request.json() as { id?: string };
   if (!id) return new Response("Photo id required", { status: 400 });
